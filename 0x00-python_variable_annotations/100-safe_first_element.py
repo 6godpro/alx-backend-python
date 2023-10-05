@@ -12,7 +12,7 @@ from typing import Sequence, Any, Union
 def safe_first_element(lst: Sequence[Any]) -> Union[Any, None]:
     """
        Returns the first element inthe
-    iterable or None if lst is not passed.
+       iterable or None if lst is not passed.
     """
     if lst:
         return lst[0]
