@@ -5,12 +5,11 @@ An asynchronous coroutine that takes in an integer argument
 that waits for a random delay between 0 and max_delay
 (included and float value) seconds and eventually returns it.
 """
-from typing import Union
 import asyncio
 import random
 
 
-async def wait_random(max_delay: int = 10) -> Union[int, float]:
+async def wait_random(max_delay: int = 10) -> float:
     """
        Coroutine that eventually returns the
        randomly generated wait time.
