@@ -16,5 +16,4 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
     routines: List[asyncio.Task] = [
         task_wait_random(max_delay) for _ in range(n)
     ]
-    print(dir(routines[0]))
     return sorted(await asyncio.gather(*routines))
