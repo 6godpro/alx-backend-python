@@ -54,13 +54,18 @@ class TestGetJson(unittest.TestCase):
 
 
 class TestMemoize(unittest.TestCase):
+    """Test suite for utils.memoize method."""
     def test_memoize(self):
+        """Test that memoize functions as expected."""
         class TestClass:
+            """Test class."""
             def a_method(self):
+                """a_method"""
                 return 42
 
             @utils.memoize
             def a_property(self):
+                """a_property"""
                 return self.a_method()
 
         with patch.object(TestClass, 'a_method', return_value=42) as a_method:
