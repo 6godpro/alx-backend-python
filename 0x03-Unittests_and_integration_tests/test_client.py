@@ -16,19 +16,17 @@ class TestGithubOrgClient(unittest.TestCase):
         ('google'),
         ('abc')
     ])
-    @patch('utils.requests.get')
     @patch('client.get_json')
-    def test_org(self, org_name, mock_get_json, mock_get):
+    def test_org(self, org_name, mock_get_json):
         """Test for GithubOrgClient.org property."""
-        mock_response = Mock()
-        mock_response.json.return_value = expected
-        mock_get.return_value = mock_response        
         mock_get_json.return_value = expected
         c = client.GithubOrgClient(org_name)
 
         self.assertEqual(c.org, expected)
         self.assertEqual(c.org, expected)
-        mock_get_json.assert_called_once_with(c.ORG_URL.format(org=c._org_name))
+        mock_get_json.assert_called_once_with(
+            c.ORG_URL.format(org=c._org_name)
+        )
 
     def test_public_repos_url(self):
         """Test that the GithubOrgClient._public_repos_url property"""
