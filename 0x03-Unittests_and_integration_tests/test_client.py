@@ -2,7 +2,7 @@
 """Test Suite
 """
 from parameterized import parameterized
-from unittest.mock import patch, Mock
+from unittest.mock import PropertyMock, patch, Mock
 
 import client
 import unittest
@@ -39,13 +39,18 @@ class TestGithubOrgClient(unittest.TestCase):
     def test_public_repos(self, mock_get_json):
         """Test the GithubOrgClient.public_repos method."""
         test_payload = {
+            "repos_url": "http://abc.com",
             "repos": [
                 {"name": "abc_us"},
                 {"name": "abc_uk"},
             ]
         }
         mock_get_json.return_value = test_payload.get('repos')
-        with patch('client.GithubOrgClient._public_repos_url') as url:
-            url.return_value = 'http://abc.com'
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as url:
+            url.return_value = test_payload["repos_url"]
             c = client.GithubOrgClient('abc')
             self.assertEqual(c.public_repos(), ["abc_us", "abc_uk"])
+            self.assertEqual(c.public_repos(), ["abc_us", "abc_uk"])
+            url.assert_called_once()
+            mock_get_json.assert_called_once()
