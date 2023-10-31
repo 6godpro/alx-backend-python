@@ -88,7 +88,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             elif url == default_url + "/repos":
                 return Mock(**{'json.return_value': cls.repos_payload})
 
-        cls.get_patcher = patch('utils.requests.get', side_effect=side_effect)
+        cls.get_patcher = patch('requests.get', side_effect=side_effect)
         cls.get_patcher.start()
 
     def test_public_repos(self):
