@@ -77,6 +77,7 @@ class TestGithubOrgClient(unittest.TestCase):
     },
 ])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Test suite for public_repos with and without license."""
     @classmethod
     def setUpClass(cls) -> None:
         """Arranges the Suite for testing."""
