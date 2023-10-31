@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Test Suite
 """
-from parameterized import parameterized
+from fixtures import TEST_PAYLOAD
+from parameterized import parameterized, parameterized_class
 from unittest.mock import PropertyMock, patch, Mock
 
 import client
@@ -65,3 +66,50 @@ class TestGithubOrgClient(unittest.TestCase):
             client.GithubOrgClient.has_license(repo, license),
             expected
         )
+
+
+@parameterized_class([
+    {
+        'org_payload': TEST_PAYLOAD[0][0],
+        'repos_payload': TEST_PAYLOAD[0][1],
+        'expected_repos': TEST_PAYLOAD[0][2],
+        'apache2_repos': TEST_PAYLOAD[0][3],
+    },
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Arranges the Suite for testing."""
+        default_url = "https://api.github.com/orgs/google"
+
+        def side_effect(url):
+            if url == default_url:
+                return Mock(**{'json.return_value': cls.org_payload})
+            elif url == default_url + "/repos":
+                return Mock(**{'json.return_value': cls.repos_payload})
+
+        cls.get_patcher = patch('utils.requests.get', side_effect=side_effect)
+        cls.get_patcher.start()
+
+    def test_public_repos(self):
+        """Tests the GithubOrgClient.public_repos method."""
+        self.assertEqual(
+            client.GithubOrgClient("google").public_repos(),
+            self.expected_repos
+        )
+
+    def test_public_repos_with_license(self):
+        """
+           Tests the GithubOrgClient.public_repos method with
+           a valid license key.
+        """
+        self.assertEqual(
+            client.GithubOrgClient("google")
+            .public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """Destroys setUp"""
+        cls.get_patcher.stop()
